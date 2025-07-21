@@ -1,0 +1,96 @@
+.app-container {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 24px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  font-family: Arial, sans-serif;
+}
+h1 {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.file-input-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.file-label {
+  font-weight: bold;
+}
+.file-name {
+  color: #555;
+  font-size: 0.95em;
+}
+.error {
+  color: #b00020;
+  background: #ffeaea;
+  padding: 8px 12px;
+  border-radius: 5px;
+  margin-bottom: 16px;
+}
+.table-section {
+  margin-bottom: 20px;
+  overflow-x: auto;
+}
+.json-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0;
+}
+.json-table th, .json-table td {
+  border: 1px solid #e0e0e0;
+  padding: 8px 12px;
+  text-align: left;
+}
+.json-table th {
+  background: #f7f7f7;
+}
+.lang-section {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+.checkboxes {
+  display: flex;
+  gap: 16px;
+}
+.checkbox-label {
+  font-size: 1em;
+  cursor: pointer;
+}
+.translate-btn {
+  padding: 8px 20px;
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.translate-btn:disabled {
+  background: #b0b0b0;
+  cursor: not-allowed;
+}
+.downloads-section {
+  margin-top: 32px;
+  text-align: center;
+}
+.download-btn {
+  margin: 0 8px 8px 0;
+  padding: 8px 18px;
+  background: #388e3c;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.download-btn:hover {
+  background: #256029;
+} 
