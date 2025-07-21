@@ -21,11 +21,15 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showInfo, setShowInfo] = useState(true);
+  const [inputMode, setInputMode] = useState('file'); // 'file' or 'url'
+  const [url, setUrl] = useState('');
+  const [fetchingUrl, setFetchingUrl] = useState(false);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
     setFileName(file.name);
+    setUrl('');
     const reader = new FileReader();
     reader.onload = (event) => {
       try {
@@ -39,6 +43,31 @@ function App() {
       }
     };
     reader.readAsText(file);
+  };
+
+  const handleUrlFetch = async () => {
+    if (!url) return;
+    setFetchingUrl(true);
+    setFileName('');
+    setError('');
+    setJsonData(null);
+    setTranslated({});
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Failed to fetch: ${res.status} ${res.statusText}`);
+      const text = await res.text();
+      try {
+        const parsed = JSON.parse(text);
+        setJsonData(parsed);
+        setError('');
+      } catch (err) {
+        setError('Invalid JSON at URL: ' + (err.message || err.toString()));
+      }
+    } catch (err) {
+      setError('Could not fetch URL: ' + (err.message || err.toString()));
+    } finally {
+      setFetchingUrl(false);
+    }
   };
 
   const handleLangChange = (code) => {
@@ -91,7 +120,7 @@ function App() {
             <li>Prepare your <b>JSON</b> file (any valid JSON structure). Example:
               <pre className="sample-json">{SAMPLE_JSON}</pre>
             </li>
-            <li>Click <b>Import JSON</b> and select your file.</li>
+            <li>Click <b>Upload File</b> or <b>Enter URL</b> to provide your JSON.</li>
             <li>Select target languages and click <b>Translate</b>.</li>
             <li>Download the translated files.</li>
           </ol>
@@ -103,19 +132,66 @@ function App() {
         </div>
       )}
       <h1>Language Localisation</h1>
-      <div className="file-input-section">
-        <label htmlFor="json-upload" className="file-label">
-          Import JSON:
-        </label>
-        <input
-          id="json-upload"
-          type="file"
-          accept="application/json,.json"
-          onChange={handleFileChange}
-        />
-        {fileName && <span className="file-name">{fileName}</span>}
+      <div className="input-mode-toggle">
+        <button
+          className={inputMode === 'file' ? 'input-mode-btn active' : 'input-mode-btn'}
+          onClick={() => setInputMode('file')}
+        >
+          <span role="img" aria-label="Upload">📁</span> Upload File
+        </button>
+        <button
+          className={inputMode === 'url' ? 'input-mode-btn active' : 'input-mode-btn'}
+          onClick={() => setInputMode('url')}
+        >
+          <span role="img" aria-label="Link">🔗</span> Enter URL
+        </button>
+      </div>
+      <div className="input-section-card">
+        {inputMode === 'file' ? (
+          <div className="file-input-section">
+            <label htmlFor="json-upload" className="file-label">
+              Click to upload or drag and drop
+            </label>
+            <input
+              id="json-upload"
+              type="file"
+              accept="application/json,.json"
+              onChange={handleFileChange}
+            />
+            {fileName && <span className="file-name">{fileName}</span>}
+          </div>
+        ) : (
+          <div className="url-input-section">
+            <input
+              type="text"
+              className="url-input"
+              placeholder="Paste JSON file URL here..."
+              value={url}
+              onChange={e => setUrl(e.target.value)}
+              disabled={fetchingUrl}
+            />
+            <button
+              className="fetch-url-btn"
+              onClick={handleUrlFetch}
+              disabled={fetchingUrl || !url}
+            >
+              {fetchingUrl ? 'Fetching...' : 'Fetch JSON'}
+            </button>
+          </div>
+        )}
       </div>
       {error && <div className="error">{error}</div>}
+      {!jsonData && !error && (
+        <div className="empty-illustration">
+          <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="40" width="80" height="50" rx="8" fill="#eaf6ff" stroke="#b3e0ff" strokeWidth="2"/>
+            <rect x="35" y="55" width="50" height="8" rx="2" fill="#b3e0ff"/>
+            <rect x="35" y="68" width="30" height="6" rx="2" fill="#b3e0ff"/>
+            <circle cx="60" cy="95" r="6" fill="#b3e0ff"/>
+          </svg>
+          <div className="empty-text">No JSON loaded yet.<br/>Upload a file or enter a URL to get started!</div>
+        </div>
+      )}
       {jsonData && (
         <div className="table-section">
           <table className="json-table">
