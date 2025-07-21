@@ -64,7 +64,11 @@ function App() {
         setError('Invalid JSON at URL: ' + (err.message || err.toString()));
       }
     } catch (err) {
-      setError('Could not fetch URL: ' + (err.message || err.toString()));
+      let msg = 'Could not fetch URL: ' + (err.message || err.toString());
+      if (err.message && err.message.includes('Failed to fetch')) {
+        msg += ' (Possible reasons: CORS error, invalid URL, or the server does not allow cross-origin requests.)';
+      }
+      setError(msg);
     } finally {
       setFetchingUrl(false);
     }
@@ -110,6 +114,11 @@ function App() {
     URL.revokeObjectURL(url);
   };
 
+  // Only show error for URL input if there is a URL and an error
+  const showUrlError = inputMode === 'url' && url && error;
+  // Only show error for file input if there is a file and an error
+  const showFileError = inputMode === 'file' && fileName && error;
+
   return (
     <div className="app-container">
       {showInfo && (
@@ -135,13 +144,13 @@ function App() {
       <div className="input-mode-toggle">
         <button
           className={inputMode === 'file' ? 'input-mode-btn active' : 'input-mode-btn'}
-          onClick={() => setInputMode('file')}
+          onClick={() => { setInputMode('file'); setError(''); }}
         >
           <span role="img" aria-label="Upload">📁</span> Upload File
         </button>
         <button
           className={inputMode === 'url' ? 'input-mode-btn active' : 'input-mode-btn'}
-          onClick={() => setInputMode('url')}
+          onClick={() => { setInputMode('url'); setError(''); }}
         >
           <span role="img" aria-label="Link">🔗</span> Enter URL
         </button>
@@ -159,6 +168,7 @@ function App() {
               onChange={handleFileChange}
             />
             {fileName && <span className="file-name">{fileName}</span>}
+            {showFileError && <div className="inline-error">{error}</div>}
           </div>
         ) : (
           <div className="url-input-section">
@@ -177,10 +187,10 @@ function App() {
             >
               {fetchingUrl ? 'Fetching...' : 'Fetch JSON'}
             </button>
+            {showUrlError && <div className="inline-error">{error}</div>}
           </div>
         )}
       </div>
-      {error && <div className="error">{error}</div>}
       {!jsonData && !error && (
         <div className="empty-illustration">
           <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
