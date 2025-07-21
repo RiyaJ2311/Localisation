@@ -34,7 +34,7 @@ function App() {
         setError('');
         setTranslated({});
       } catch (err) {
-        setError('Invalid JSON file.');
+        setError('Invalid JSON file: ' + (err.message || err.toString()));
         setJsonData(null);
       }
     };
@@ -86,12 +86,12 @@ function App() {
       {showInfo && (
         <div className="info-box">
           <button className="close-info" onClick={() => setShowInfo(false)} title="Dismiss">×</button>
-          <h2>How to use PushOwl Loc</h2>
+          <h2>How to use Language Localisation</h2>
           <ol>
-            <li>Prepare your <b>en.json</b> file. Example:
+            <li>Prepare your <b>JSON</b> file (any valid JSON structure). Example:
               <pre className="sample-json">{SAMPLE_JSON}</pre>
             </li>
-            <li>Click <b>Import en.json</b> and select your file.</li>
+            <li>Click <b>Import JSON</b> and select your file.</li>
             <li>Select target languages and click <b>Translate</b>.</li>
             <li>Download the translated files.</li>
           </ol>
@@ -102,10 +102,10 @@ function App() {
           </div>
         </div>
       )}
-      <h1>PushOwl Loc</h1>
+      <h1>Language Localisation</h1>
       <div className="file-input-section">
         <label htmlFor="json-upload" className="file-label">
-          Import en.json:
+          Import JSON:
         </label>
         <input
           id="json-upload"
@@ -122,14 +122,14 @@ function App() {
             <thead>
               <tr>
                 <th>Key</th>
-                <th>English Value</th>
+                <th>Value</th>
               </tr>
             </thead>
             <tbody>
               {Object.entries(jsonData).map(([key, value]) => (
                 <tr key={key}>
                   <td>{key}</td>
-                  <td>{value}</td>
+                  <td>{typeof value === 'object' ? JSON.stringify(value) : value}</td>
                 </tr>
               ))}
             </tbody>
