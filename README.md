@@ -1,9 +1,9 @@
-# PushOwl Loc
+# Localisation file
 
 A simple React app to help you localize your English JSON files into multiple languages (German, Spanish, Hindi).
 
 ## Features
-- Import an `en.json` file containing English strings
+- Import an .json file containing English strings
 - View all keys and values in a table
 - Select target languages (de, es, hi) with checkboxes
 - Translate with a single click (calls `/api/translate` endpoint)
