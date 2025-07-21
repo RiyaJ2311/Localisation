@@ -7,6 +7,12 @@ const LANGUAGES = [
   { code: 'hi', label: 'Hindi (hi)' },
 ];
 
+const SAMPLE_JSON = `{
+  "greeting": "Hello",
+  "farewell": "Goodbye",
+  "thanks": "Thank you"
+}`;
+
 function App() {
   const [jsonData, setJsonData] = useState(null);
   const [fileName, setFileName] = useState('');
@@ -14,6 +20,7 @@ function App() {
   const [translated, setTranslated] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showInfo, setShowInfo] = useState(true);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -76,6 +83,25 @@ function App() {
 
   return (
     <div className="app-container">
+      {showInfo && (
+        <div className="info-box">
+          <button className="close-info" onClick={() => setShowInfo(false)} title="Dismiss">×</button>
+          <h2>How to use PushOwl Loc</h2>
+          <ol>
+            <li>Prepare your <b>en.json</b> file. Example:
+              <pre className="sample-json">{SAMPLE_JSON}</pre>
+            </li>
+            <li>Click <b>Import en.json</b> and select your file.</li>
+            <li>Select target languages and click <b>Translate</b>.</li>
+            <li>Download the translated files.</li>
+          </ol>
+          <div className="backend-info">
+            <b>Backend required:</b> The app sends a POST request to <code>/api/translate</code>.<br/>
+            You must run a backend server that handles this endpoint and returns translated JSONs.<br/>
+            <a href="https://github.com/RiyaJ2311/Localisation#4-api-requirement" target="_blank" rel="noopener noreferrer">See README for API details</a>.
+          </div>
+        </div>
+      )}
       <h1>PushOwl Loc</h1>
       <div className="file-input-section">
         <label htmlFor="json-upload" className="file-label">
